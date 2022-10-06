@@ -26,6 +26,10 @@ spec:
   template:
     metadata:
       annotations:
+        vault.security.banzaicloud.io/vault-addr: {{ .Values.global.vaultUrl }}
+        vault.security.banzaicloud.io/vault-role: "default"
+        vault.security.banzaicloud.io/vault-skip-verify: "true"
+        vault.security.banzaicloud.io/vault-path: "dev-cluster"
         {{- if (include "mariadb.secondary.createConfigmap" .) }}
         checksum/configuration: {{ include (print $.Template.BasePath "/secondary/configmap.yaml") . | sha256sum }}
         {{- end }}

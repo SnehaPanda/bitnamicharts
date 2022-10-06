@@ -16,6 +16,7 @@ global:
   ##
   imagePullSecrets: []
   storageClass: ""
+  vaultUrl: "http://localvault.server.org"
 
 ## @section Common parameters
 ##
@@ -111,11 +112,13 @@ auth:
   database: my_database
   ## @param auth.username Name for a custom user to create
   ## ref: https://github.com/bitnami/containers/blob/main/bitnami/mariadb/README.md#creating-a-database-user-on-first-run
+  ##  if its given as  vault:secret/data/db#uid then the data will be read from vault server, if you dont want to use vault server than keep it a empty string ex- "" or pass plain text as "dbuser"
   ##
-  username: ""
+  username: vault:secret/data/db#uid
   ## @param auth.password Password for the new user. Ignored if existing secret is provided
+  ##  if its given as  vault:secret/data/db#pwd then the data will be read from vault server, if you dont want to use vault server than keep it a empty string ex- "" or pass plain text as "mytopsecret"
   ##
-  password: ""
+  password: vault:secret/data/db#pwd
   ## @param auth.replicationUser MariaDB replication user
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mariadb#setting-up-a-replication-cluster
   ##
@@ -424,7 +427,7 @@ primary:
   persistence:
     ## @param primary.persistence.enabled Enable persistence on MariaDB primary replicas using a `PersistentVolumeClaim`. If false, use emptyDir
     ##
-    enabled: true
+    enabled: false
     ## @param primary.persistence.existingClaim Name of an existing `PersistentVolumeClaim` for MariaDB primary replicas
     ## NOTE: When it's set the rest of persistence parameters are ignored
     ##
@@ -930,7 +933,7 @@ secondary:
 serviceAccount:
   ## @param serviceAccount.create Enable the creation of a ServiceAccount for MariaDB pods
   ##
-  create: true
+  create: false
   ## @param serviceAccount.name Name of the created ServiceAccount
   ## If not set and create is true, a name is generated using the mariadb.fullname template
   ##
@@ -940,7 +943,7 @@ serviceAccount:
   annotations: {}
   ## @param serviceAccount.automountServiceAccountToken Automount service account token for the server service account
   ##
-  automountServiceAccountToken: false
+  automountServiceAccountToken: true
 ## Role Based Access
 ## ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
